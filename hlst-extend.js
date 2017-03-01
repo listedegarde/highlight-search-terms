@@ -1,4 +1,52 @@
 (function($){
+	var accentedForms = {
+		'a':'ªàáâãäåāăąầằảẩẳẫẵấắạậặɑǎ',
+		'o':'ºòóôõöøōŏőơồờỏổởỗỡốớọộợǒ',
+		'A':'ÀÁÂÃÄÅĀĂĄẦẰẢẨẲẪẴẤẮẠẬẶǍ',
+		'AE':'Æ',
+		'C':'ÇĆĈĊČ',
+		'E':'ÈÉÊËĒĔĖĘĚ€ỀẺỂẼỄẾẸỆ',
+		'I':'ÌÍÎÏĨĪĬĮİỈỊǏ',
+		'D':'ÐĎĐ',
+		'N':'ÑŃŅŇŉŋ',
+		'O':'ÒÓÔÕÖØŌŎŐƠỒỜỎỔỞỖỠỐỚỌỘỢǑ',
+		'U':'ÙÚÛÜŨŪŬŮŰŲƯỪỦỬỮỨỤỰǕǗǓǙǛ',
+		'Y':'ÝŶŸỲỶỸỴ',
+		'TH':'Þ',
+		's':'ßśŝşšſș',
+		'ae':'æ',
+		'c':'çćĉċč',
+		'e':'èéêëēĕėęěềẻểẽễếẹệ',
+		'i':'ìíîïĩīĭįıỉịǐ',
+		'd':'ðďđ',
+		'n':'ñńņňŊ',
+		'u':'ùúûüũūŭůűųưừủửữứụựǖǘǔǚǜ',
+		'y':'ýÿŷỳỷỹỵ',
+		'th':'þ',
+		'G':'ĜĞĠĢ',
+		'g':'ĝğġģ',
+		'H':'ĤĦ',
+		'h':'ĥħ',
+		'IJ':'Ĳ',
+		'ij':'ĳ',
+		'J':'Ĵ',
+		'j':'ĵ',
+		'K':'Ķ',
+		'k':'ķĸ',
+		'L':'ĹĻĽĿŁ',
+		'l':'ĺļľŀł',
+		'OE':'Œ',
+		'oe':'œ',
+		'R':'ŔŖŘ',
+		'r':'ŕŗř',
+		'S':'ŚŜŞŠȘ',
+		'T':'ŢŤŦȚ',
+		't':'ţťŧț',
+		'W':'Ŵ',
+		'w':'ŵ',
+		'Z':'ŹŻŽ',
+		'z':'źżž',
+	};
 	$.fn.highlight = function( term, insensitive, t , c ) {
 		return this.each(function(){
 			t = t || 'mark';
@@ -10,7 +58,7 @@
 			skip = ['SCRIPT', 'STYLE', 'INPUT', 'SELECT', 'BUTTON', 'OBJECT', 'APPLET', 'TEXTAREA', 'PRE', 'CODE', 'EMBED', 'IFRAME'];
 
 			if ( term && node && $.inArray(this.nodeName, skip) == -1 ) {
-				var regex = new RegExp( term.replace(/([-.*+?^${}()|[\]\/\\])/g,"\\$1"), insensitive ? 'ig' : 'g');
+				regex = new RegExp(term, insensitive ? 'ig' : 'g');
 
 				do {
 					if ( node.nodeType === 3 ) {
@@ -92,11 +140,20 @@
 				*/
 				if (area.length != 0){
 					for (i in hlst_query){
+						var term = hlst_query[i].replace(/([-.*+?^${}()|[\]\/\\])/g,"\\$1");
+
+						for (var s in accentedForms) {
+							for (var x in accentedForms[s].split('')) {
+								term = term.split(accentedForms[s].charAt(x)).join(s);
+							}
+							term = term.split(s).join('[' + s + accentedForms[s] + ']');
+						}
+
 						/*
 						console.log('searching for: ' + hlst_query[i]);
 						*/
-						area.highlight(hlst_query[i], true, t, 'hilite term-' + i);
-						area.find('*').highlight(hlst_query[i], true, t, 'hilite term-' + i)
+						area.highlight(term, true, t, 'hilite term-' + i);
+						area.find('*').highlight(term, true, t, 'hilite term-' + i)
 					}
 					break;
 				}
